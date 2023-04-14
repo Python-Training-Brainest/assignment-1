@@ -22,6 +22,7 @@ Guess a letter: v
 You guessed the word java !
 '''
 import sys
+import string
 
 
 def hangman(word):
@@ -36,19 +37,21 @@ def hangman(word):
         print(f"You have {tries} tries left.")
         print(f"Used letters: {' '.join(used_letters)}")
         print("Word: ", " ".join([("_" if l not in matched_letters else l) for l in word]))
-        print("\n")
 
         try:
             guess = str(input("Guess a letter: "))
 
             if len(guess) > 1: raise ValueError
 
+            elif guess in string.digits or guess in string.punctuation:
+                raise ValueError
+
             elif guess in used_letters:
                 print("You already guessed this letter. Choose a different one.")
 
-            elif guess in word:
-                matched_letters.append(guess)
-                used_letters.append(guess)
+            elif str.lower(guess) in word:
+                matched_letters.append(str.lower(guess))
+                used_letters.append(str.lower(guess))
 
             else:
                 print(f"The letter '{guess}' is not in the word")
@@ -64,9 +67,9 @@ def hangman(word):
                 break
 
         except ValueError:
-            print("You can only guess a single letter [a-z]")
+            print("You can only enter a letter [a-z].")
 
 
 if __name__ == "__main__":
-    hangman(word=sys.argv[1])
+    hangman(word=str.lower(sys.argv[1]))
 
