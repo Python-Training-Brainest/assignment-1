@@ -28,15 +28,15 @@ import string
 def hangman(word):
     tries = 6
     guessed = False
-    used_letters = []
-    matched_letters = []
+    word_letters = set(word)
+    used_letters = set()
 
-    while tries > 0: 
+    while tries > 0:
 
         print("\n")
         print(f"You have {tries} tries left.")
         print(f"Used letters: {' '.join(used_letters)}")
-        print("Word: ", " ".join([("_" if l not in matched_letters else l) for l in word]))
+        print("Word: ", " ".join([("_" if l not in used_letters & word_letters else l) for l in word]))
 
         try:
             guess = str(input("Guess a letter: "))
@@ -46,22 +46,25 @@ def hangman(word):
             elif guess in string.digits or guess in string.punctuation:
                 raise ValueError
 
+            elif guess in string.ascii_uppercase:
+                guess = str.lower(guess)
+
             elif guess in used_letters:
                 print("You already guessed this letter. Choose a different one.")
 
-            elif str.lower(guess) in word:
-                matched_letters.append(str.lower(guess))
-                used_letters.append(str.lower(guess))
-
-            else:
+            elif set(guess).isdisjoint(word_letters):
                 print(f"The letter '{guess}' is not in the word")
-                used_letters.append(guess)
+                used_letters |= set(guess)
                 tries -= 1
 
                 if tries == 0:
                     return print("You loose. :(")
 
-            if all(letter in matched_letters for letter in word):
+            else:
+                used_letters |= set(guess)
+
+            # Finally:
+            if used_letters >= word_letters:
                 return print(f"You guessed the word '{word}'.\n")
 
         except ValueError:
