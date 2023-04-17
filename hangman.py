@@ -59,12 +59,10 @@ def hangman(word):
                 tries -= 1
 
                 if tries == 0:
-                    print("You loose. :(")
-                    break
+                    return print("You loose. :(")
 
             if all(letter in matched_letters for letter in word):
-                print(f"You guessed the word '{word}'.\n")
-                break
+                return print(f"You guessed the word '{word}'.\n")
 
         except ValueError:
             print("You can only enter a letter [a-z].")
